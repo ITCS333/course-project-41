@@ -19,7 +19,8 @@ let assignments = [];
 // TODO: Select the assignment form ('#assignment-form').
 
 // TODO: Select the assignments table body ('#assignments-tbody').
-
+const assignmentForm = document.querySelector("#assignment-form");
+const assignmentsTableBody = document.querySelector("#assignments-tbody");
 // --- Functions ---
 
 /**
@@ -60,8 +61,19 @@ function renderTable() {
  * 6. Reset the form.
  */
 function handleAddAssignment(event) {
-  // ... your implementation here ...
+  event.preventDefault();
+
+  const titleInput = document.getElementById("title");
+
+  if (!titleInput || titleInput.value.trim() === "") {
+    alert("Assignment title cannot be empty.");
+    return;
+  }
+
+  console.log("Phase 2: submit handler is working.");
 }
+  
+
 
 /**
  * TODO: Implement the handleTableClick function.
@@ -89,6 +101,9 @@ function handleTableClick(event) {
  */
 async function loadAndInitialize() {
   // ... your implementation here ...
+    if (assignmentForm) {
+    assignmentForm.addEventListener("submit", handleAddAssignment);
+  }
 }
 
 // --- Initial Page Load ---
