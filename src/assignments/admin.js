@@ -125,7 +125,20 @@ function handleAddAssignment(event) {
  * 4. Call `renderTable()` to refresh the list.
  */
 function handleTableClick(event) {
-  // ... your implementation here ...
+  const target = event.target;
+
+  // Only act if a delete button was clicked
+  if (!target.classList.contains("delete-btn")) {
+    return;
+  }
+
+  const idToDelete = target.dataset.id;
+
+  // Remove the assignment with this id
+  assignments = assignments.filter((assignment) => assignment.id !== idToDelete);
+
+  // Re-render the table after deletion
+  renderTable();
 }
 
 /**
@@ -140,8 +153,13 @@ function handleTableClick(event) {
  */
 async function loadAndInitialize() {
   // ... your implementation here ...
-    if (assignmentForm) {
+
+  if (assignmentForm) {
     assignmentForm.addEventListener("submit", handleAddAssignment);
+  }
+
+  if (assignmentsTableBody) {
+    assignmentsTableBody.addEventListener("click", handleTableClick);
   }
 }
 
