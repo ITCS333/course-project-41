@@ -34,7 +34,20 @@ const assignmentsTableBody = document.querySelector("#assignments-tbody");
  * - A "Delete" button with class "delete-btn" and `data-id="${id}"`.
  */
 function createAssignmentRow(assignment) {
-  // ... your implementation here ...
+  const { id, title, dueDate } = assignment;
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td>${title}</td>
+    <td>${dueDate || "-"}</td>
+    <td>
+      <button class="edit-btn" data-id="${id}">Edit</button>
+      <button class="delete-btn" data-id="${id}">Delete</button>
+    </td>
+  `;
+
+  return row;
 }
 
 /**
@@ -46,9 +59,17 @@ function createAssignmentRow(assignment) {
  * append the resulting <tr> to `assignmentsTableBody`.
  */
 function renderTable() {
-  // ... your implementation here ...
-}
+  if (!assignmentsTableBody) return;
 
+  // Clear any existing rows
+  assignmentsTableBody.innerHTML = "";
+
+  // Add one row for each assignment in the array
+  assignments.forEach((assignment) => {
+    const row = createAssignmentRow(assignment);
+    assignmentsTableBody.appendChild(row);
+  });
+}
 /**
  * TODO: Implement the handleAddAssignment function.
  * This is the event handler for the form's 'submit' event.
@@ -64,13 +85,31 @@ function handleAddAssignment(event) {
   event.preventDefault();
 
   const titleInput = document.getElementById("title");
+  const dueDateInput = document.getElementById("due-date");
 
   if (!titleInput || titleInput.value.trim() === "") {
     alert("Assignment title cannot be empty.");
     return;
   }
 
-  console.log("Phase 2: submit handler is working.");
+  // Create a new assignment object
+  const newAssignment = {
+    id: `asg_${Date.now()}`,
+    title: titleInput.value.trim(),
+    dueDate: dueDateInput ? dueDateInput.value : ""
+  };
+
+  // Add to the global array
+  assignments.push(newAssignment);
+
+  // Re-render the table
+  renderTable();
+
+  // Optional: clear the form fields
+  titleInput.value = "";
+  if (dueDateInput) {
+    dueDateInput.value = "";
+  }
 }
   
 
