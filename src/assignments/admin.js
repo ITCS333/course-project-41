@@ -81,36 +81,48 @@ function renderTable() {
  * 5. Call `renderTable()` to refresh the list.
  * 6. Reset the form.
  */
-function handleAddAssignment(event) {
-  event.preventDefault();
+function handleTableClick(event) {
+  const target = event.target;
 
-  const titleInput = document.getElementById("title");
-  const dueDateInput = document.getElementById("due-date");
+  // --- DELETE BUTTON ---
+  if (target.classList.contains("delete-btn")) {
+    const idToDelete = target.dataset.id;
 
-  if (!titleInput || titleInput.value.trim() === "") {
-    alert("Assignment title cannot be empty.");
+    assignments = assignments.filter(
+      (assignment) => assignment.id !== idToDelete
+    );
+
+    renderTable();
     return;
   }
 
-  // Create a new assignment object
-  const newAssignment = {
-    id: `asg_${Date.now()}`,
-    title: titleInput.value.trim(),
-    dueDate: dueDateInput ? dueDateInput.value : ""
-  };
+  // --- EDIT BUTTON ---
+  if (target.classList.contains("edit-btn")) {
+    const idToEdit = target.dataset.id;
+    const assignmentToEdit = assignments.find(
+      (assignment) => assignment.id === idToEdit
+    );
 
-  // Add to the global array
-  assignments.push(newAssignment);
+    if (!assignmentToEdit) return;
 
-  // Re-render the table
-  renderTable();
+    // Fill the form with existing data
+    const titleInput = document.getElementById("title");
+    const dueDateInput = document.getElementById("due-date");
 
-  // Optional: clear the form fields
-  titleInput.value = "";
-  if (dueDateInput) {
-    dueDateInput.value = "";
+    if (titleInput) titleInput.value = assignmentToEdit.title || "";
+    if (dueDateInput) dueDateInput.value = assignmentToEdit.dueDate || "";
+
+    // Mark that we're editing this one
+    editingAssignmentId = idToEdit;
+
+    // (optional) change button text to show we're updating
+    const submitButton = assignmentForm?.querySelector("button[type='submit']");
+    if (submitButton) {
+      submitButton.textContent = "Update Assignment";
+    }
   }
 }
+
   
 
 
