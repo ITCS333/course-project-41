@@ -1,47 +1,37 @@
-/*
-  Requirement: Populate the "Weekly Course Breakdown" list page.
+/* list.js – LOAD WEEKS LIST */
 
-  Instructions:
-  1. Link this file to `list.html` using:
-     <script src="list.js" defer></script>
+const API = "./api/index.php?resource=weeks";
 
-  2. In `list.html`, add an `id="week-list-section"` to the
-     <section> element that will contain the weekly articles.
+const weekListSection = document.querySelector("#week-list-section");
 
-  3. Implement the TODOs below.
-*/
+function createWeekCard(week) {
+    const article = document.createElement("article");
+    article.classList.add("week-card");
 
-// --- Element Selections ---
-// TODO: Select the section for the week list ('#week-list-section').
+    article.innerHTML = `
+        <h2>${week.title}</h2>
+        <p>Starts on: ${week.start_date}</p>
+        <p>${week.description}</p>
+        <a href="details.html?week_id=${week.week_id}">View Details & Discussion</a>
+    `;
 
-// --- Functions ---
-
-/**
- * TODO: Implement the createWeekArticle function.
- * It takes one week object {id, title, startDate, description}.
- * It should return an <article> element matching the structure in `list.html`.
- * - The "View Details & Discussion" link's `href` MUST be set to `details.html?id=${id}`.
- * (This is how the detail page will know which week to load).
- */
-function createWeekArticle(week) {
-  // ... your implementation here ...
+    return article;
 }
 
-/**
- * TODO: Implement the loadWeeks function.
- * This function needs to be 'async'.
- * It should:
- * 1. Use `fetch()` to get data from 'weeks.json'.
- * 2. Parse the JSON response into an array.
- * 3. Clear any existing content from `listSection`.
- * 4. Loop through the weeks array. For each week:
- * - Call `createWeekArticle()`.
- * - Append the returned <article> element to `listSection`.
- */
 async function loadWeeks() {
-  // ... your implementation here ...
+    try {
+        const res = await fetch(API);
+        const json = await res.json();
+
+        if (!json.success) throw new Error(json.error);
+
+        weekListSection.innerHTML = "";
+        json.data.forEach(week => {
+            weekListSection.appendChild(createWeekCard(week));
+        });
+    } catch (err) {
+        console.error("Failed to load weeks:", err);
+    }
 }
 
-// --- Initial Page Load ---
-// Call the function to populate the page.
 loadWeeks();

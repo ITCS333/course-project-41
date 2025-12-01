@@ -1,1 +1,331 @@
-/* CSS Styles */
+/* -----------------------------------------------------------
+   GLOBAL THEME — Modern UI
+----------------------------------------------------------- */
+:root {
+    --bg: #f4f6fa;
+    --card-bg: #ffffff;
+    --text: #1f1f1f;
+    --text-light: #6b6b6b;
+    --primary: #4c8bf5;
+    --primary-dark: #2f6ce0;
+    --accent: #2ecc71;
+    --accent-dark: #27ae60;
+    --danger: #e74c3c;
+    --danger-dark: #c0392b;
+    --radius: 12px;
+    --shadow: 0 8px 30px rgba(0,0,0,0.07);
+    --transition: 0.25s ease;
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Poppins", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    line-height: 1.65;
+}
+
+/* -----------------------------------------------------------
+   HEADER
+----------------------------------------------------------- */
+#page-header, header {
+    background: var(--primary);
+    color: white;
+    padding: 25px 30px;
+    box-shadow: var(--shadow);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#page-title,
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* -----------------------------------------------------------
+   MAIN LAYOUT
+----------------------------------------------------------- */
+#page-main, main {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* -----------------------------------------------------------
+   SECTIONS / CARDS
+----------------------------------------------------------- */
+section {
+    background: var(--card-bg);
+    padding: 25px;
+    margin-bottom: 35px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+section:hover {
+    transform: translateY(-2px);
+}
+
+section h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* -----------------------------------------------------------
+   ARTICLE CARDS (Weeks List)
+----------------------------------------------------------- */
+article.week-card,
+.week-placeholder {
+    padding: 22px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+article.week-card:hover,
+.week-placeholder:hover {
+    transform: translateY(-3px);
+}
+
+.week-title {
+    font-size: 1.3rem;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.week-date {
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+.week-description {
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.week-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--primary-dark);
+    transition: var(--transition);
+}
+
+.week-link:hover {
+    text-decoration: underline;
+}
+
+/* -----------------------------------------------------------
+   DETAILS PAGE
+----------------------------------------------------------- */
+#week-description {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+#week-links-list li {
+    margin-bottom: 8px;
+}
+
+#week-links-list a {
+    color: var(--primary-dark);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+#week-links-list a:hover {
+    text-decoration: underline;
+}
+
+/* -----------------------------------------------------------
+   COMMENTS SECTION
+----------------------------------------------------------- */
+#comment-list article {
+    background: #ffffff;
+    padding: 18px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 15px;
+}
+
+#comment-list p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+#comment-list footer {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.comment-delete-btn {
+    float: right;
+    border: none;
+    background: transparent;
+    font-size: 1.3rem;
+    color: var(--danger);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.comment-delete-btn:hover {
+    color: var(--danger-dark);
+    transform: scale(1.2);
+}
+
+/* -----------------------------------------------------------
+   FORMS
+----------------------------------------------------------- */
+form fieldset {
+    border: none;
+    padding: 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+input[type=text],
+input[type=date],
+textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    transition: var(--transition);
+    background: #fdfdfd;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 139, 245, 0.2);
+}
+
+/* Submit + action buttons */
+button {
+    padding: 12px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.secondary {
+    background: var(--text-light);
+}
+
+.secondary:hover {
+    background: #444;
+}
+
+button.edit-btn {
+    background: var(--accent);
+}
+
+button.edit-btn:hover {
+    background: var(--accent-dark);
+}
+
+button.delete-btn {
+    background: var(--danger);
+}
+
+button.delete-btn:hover {
+    background: var(--danger-dark);
+}
+
+/* -----------------------------------------------------------
+   ADMIN TABLE
+----------------------------------------------------------- */
+#weeks-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#weeks-table thead {
+    background: #eef3ff;
+}
+
+#weeks-table th,
+#weeks-table td {
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 0.98rem;
+}
+
+#weeks-table tbody tr {
+    background: white;
+    border-bottom: 1px solid #ddd;
+    transition: var(--transition);
+}
+
+#weeks-table tbody tr:hover {
+    background: #f8faff;
+}
+
+/* -----------------------------------------------------------
+   RESPONSIVE DESIGN
+----------------------------------------------------------- */
+@media (max-width: 850px) {
+    main {
+        padding: 10px;
+    }
+
+    #page-title {
+        font-size: 1.6rem;
+    }
+
+    section {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    header {
+        text-align: center;
+        padding: 20px 15px;
+    }
+
+    button {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .action-td button {
+        width: 100%;
+        margin-top: 7px;
+    }
+
+    .week-placeholder,
+    .week-card {
+        padding: 16px;
+    }
+}
