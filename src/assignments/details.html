@@ -45,54 +45,47 @@
 
 <div class="container">
 
-    <h1>Assignment 1: HTML Basics</h1>
-    <p><strong>Due date:</strong> 2025-11-30</p>
+    <h1 id="assignment-title">Assignment 1: HTML Basics</h1>
+    <p id="assignment-due-date">Due: 2025-11-30</p>
 
     <div class="box">
         <h2>Description</h2>
-        <p>
-            This assignment introduces the basics of HTML, including tags, structure,
-            and creating simple web pages.
-        </p>
+       <p id="assignment-description">
+    This assignment introduces the basics of HTML, including tags, structure,
+    and creating simple web pages.
+</p>
 
         <h2>Attached Files & Links</h2>
-        <ul>
-            <li><a href="#">assignment-brief.pdf</a></li>
-            <li><a href="#">example-layout.html</a></li>
-        </ul>
+       <ul id="assignment-files-list">
+    <li><a href="#">assignment-brief.pdf</a></li>
+    <li><a href="#">example-layout.html</a></li>
+</ul>
     </div>
 
     <div class="box">
-        <h2>Questions & Discussion</h2>
+    <h2>Questions & Discussion</h2>
 
-        <!-- Example comments -->
-        <article>
-            <p>Is it okay to use inline CSS in this assignment?</p>
-            <footer><em>Posted by: Student A</em></footer>
-        </article>
+    <div id="comment-list">
+        <!-- JS will render comments here -->
+    </div>
 
-        <article>
-            <p>No, please use external CSS or no CSS at all for this assignment.</p>
-            <footer><em>Posted by: Teacher</em></footer>
-        </article>
-
-        <hr>
+    <hr>
 
         <!-- Comment Form -->
-        <form action="#">
-            <fieldset>
-                <legend>Ask a Question</legend>
+       <form id="comment-form" action="#">
+    <fieldset>
+        <legend>Ask a Question</legend>
 
-                <label for="new-comment">Your Comment:</label>
-                <textarea id="new-comment" required></textarea>
+        <label for="new-comment-text">Your Comment:</label>
+        <textarea id="new-comment-text" required></textarea>
 
-                <button type="submit">Post Comment</button>
-            </fieldset>
-        </form>
+        <button type="submit">Post Comment</button>
+    </fieldset>
+</form>
 
     </div>
 
 </div>
-
+<script src="details.js" defer></script>
 </body>
 </html>

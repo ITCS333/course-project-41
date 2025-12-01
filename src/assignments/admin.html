@@ -1,82 +1,126 @@
-<!--
-  Requirement: Create the Admin View for Assignments
-
-  Instructions:
-  Fill in the HTML elements as described in the comments.
-  This page allows the teacher (admin) to perform full CRUD operations on course assignments.
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- TODO: Add the 'meta' tag for character encoding (UTF-8). -->
-    
-    <!-- TODO: Add the responsive 'viewport' meta tag. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add / Edit Assignment</title>
 
-    <!-- TODO: Add a title, e.g., "Manage Assignments". -->
-
-    <!-- TODO: Link to your CSS framework or stylesheet. -->
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 30px; 
+            background: #f7f7f7; 
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 120px;
+        }
+        .button-row {
+            margin-top: 20px;
+            text-align: right;
+        }
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-secondary {
+            background: #ccc;
+            margin-right: 8px;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- TODO: Create a 'header' with a main heading ('h1') "Manage Assignments". -->
+<div class="container">
+    <h1>Add / Edit Assignment</h1>
 
-    <!-- TODO: Create the 'main' content area. -->
+    <!-- Front-end layout only - Phase 1 -->
+    <form id="assignment-form">
+        <label for="title">Assignment Title</label>
+        <input type="text" id="title" placeholder="e.g., Assignment 1: HTML Basics">
 
-        <!-- Section 1: Add/Edit Assignment Form -->
-        <!-- TODO: Create a 'section' for the form. -->
-            <!-- TODO: Add a sub-heading ('h2') "Add a New Assignment". -->
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Write the assignment instructions here..."></textarea>
 
-            <!-- TODO: Create a 'form' with an id "assignment-form". Action can be '#'. -->
-                <!-- TODO: Use a 'fieldset' to group the form controls. -->
-                    <!-- TODO: Add a 'legend', e.g., "Assignment Details". -->
+        <label for="due-date">Due Date</label>
+        <input type="date" id="due-date">
 
-                    <!-- TODO: Add a 'label' and 'input' for the assignment title.
-                         - label 'for': "assignment-title"
-                         - input 'id': "assignment-title", type="text", required -->
+        <label for="file-link">File Link / URL</label>
+        <input type="text" id="file-link" placeholder="e.g., https://example.com/assignment1.pdf">
 
-                    <!-- TODO: Add a 'label' and 'textarea' for the description.
-                         - label 'for': "assignment-description"
-                         - textarea 'id': "assignment-description", rows="5", required -->
+        <div class="button-row">
+            <button type="button" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary">Save Assignment</button>
+        </div>
+    </form>
+    
+    <section>
+        <h2>Current Assignments</h2>
 
-                    <!-- TODO: Add a 'label' and 'input' for the due date.
-                         - label 'for': "assignment-due-date"
-                         - input 'id': "assignment-due-date", type="date", required -->
-                    
-                    <!-- TODO: Add a 'label' and 'textarea' for attached files or links (one per line).
-                         - label 'for': "assignment-files"
-                         - textarea 'id': "assignment-files", rows="3" -->
+        <table id="assignments-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-                    <!-- TODO: Add a 'button' to submit the form.
-                         - id="add-assignment", type="submit", Text: "Add Assignment" -->
-                <!-- End of fieldset. -->
-            <!-- End of form. -->
-        <!-- End of form section. -->
+            <tbody id="assignments-tbody">
+                <tr>
+                    <td>HTML Basics</td>
+                    <td>2025-01-10</td>
+                    <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
 
-
-        <!-- Section 2: Existing Assignments List -->
-        <!-- TODO: Create a 'section' to display the list of current assignments. -->
-            <!-- TODO: Add a sub-heading ('h2') "Current Assignments". -->
-
-            <!-- TODO: Create a 'table' with id "assignments-table". -->
-                <!-- TODO: Create a 'thead' and a 'tr' inside it. -->
-                    <!-- TODO: Add 'th' elements for "Title", "Due Date", and "Actions". -->
-                
-                <!-- TODO: Create a 'tbody' for the data. -->
-                    <!-- TODO: Add 1-2 rows of dummy data to see the structure. -->
-                    <!-- Example Row 1: -->
-                    <!-- TODO: Create a 'tr' for the first assignment. -->
-                        <!-- TODO: Add 'td' cells for a title (e.g., "HTML Basics") and a due date. -->
-                        
-                        <!-- TODO: Add a 'td' containing the action buttons. -->
-                            <!-- TODO: Add an "Edit" button. -->
-                            <!-- TODO: Add a "Delete" button. -->
-                        <!-- End of actions 'td'. -->
-                    <!-- End of the row. -->
-
-                <!-- End of tbody. -->
-            <!-- End of table. -->
-        <!-- End of list section. -->
-
-    <!-- End of main. -->
+                <tr>
+                    <td>CSS Layout</td>
+                    <td>2025-01-17</td>
+                    <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    
+</div>
+<script src="admin.js" defer></script>
 </body>
 </html>
