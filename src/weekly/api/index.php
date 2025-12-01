@@ -1,40 +1,27 @@
 <?php
-/**
- * Weekly Course Breakdown API
- * Complete implementation with all TODOs filled.
- * Supports CRUD for weeks and comments using auto-generated week_id.
- */
-
-// ============================================================================
-// SETUP AND CONFIGURATION
-// ============================================================================
-
-// JSON output + CORS
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Handle OPTIONS preflight
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     http_response_code(200);
     exit();
 }
 
-// Include Database connection
 require_once "../../config/Database.php";
 
 $database = new Database();
 $db = $database->getConnection();
 
+if (!$db) {
+    sendError("Database connection failed", 500);
+}
+
 $method  = $_SERVER['REQUEST_METHOD'];
 $rawBody = file_get_contents("php://input");
 $data    = json_decode($rawBody, true);
 $resource = $_GET['resource'] ?? 'weeks';
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
 
 function sendResponse($data, $statusCode = 200) {
     http_response_code($statusCode);
@@ -72,11 +59,6 @@ function generateNextWeekId($db) {
     return "week_" . $next;
 }
 
-
-// ============================================================================
-// WEEKS CRUD
-// ============================================================================
-
 function getAllWeeks($db) {
     $search = $_GET["search"] ?? null;
     $sort   = $_GET["sort"] ?? "start_date";
@@ -102,6 +84,7 @@ function getAllWeeks($db) {
     $rows = $stmt->fetchAll();
 
     foreach ($rows as &$row) {
+        $row["week_id"] = "week_" . $row["id"];
         $row["links"] = $row["links"] ? json_decode($row["links"], true) : [];
     }
 
@@ -111,13 +94,16 @@ function getAllWeeks($db) {
 function getWeekById($db, $weekId) {
     if (empty($weekId)) sendError("week_id parameter is missing", 400);
 
-    $stmt = $db->prepare("SELECT * FROM weeks WHERE week_id = ?");
-    $stmt->execute([$weekId]);
+    $numericId = str_replace("week_", "", $weekId);
+
+    $stmt = $db->prepare("SELECT * FROM weeks WHERE id = ?");
+    $stmt->execute([$numericId]);
     $week = $stmt->fetch();
 
     if (!$week) sendError("Week not found", 404);
 
-    $week["links"] = json_decode($week["links"], true);
+    $week["week_id"] = "week_" . $week["id"];
+    $week["links"] = $week["links"] ? json_decode($week["links"], true) : [];
 
     sendResponse(["success" => true, "data" => $week]);
 }
@@ -135,15 +121,14 @@ function createWeek($db, $data) {
     $desc  = sanitizeInput($data["description"]);
     $start = $data["start_date"];
 
-    $weekId = generateNextWeekId($db);
-
     $links = json_encode($data["links"] ?? []);
 
-    $stmt = $db->prepare("INSERT INTO weeks (week_id, title, start_date, description, links) VALUES (?, ?, ?, ?, ?)");
-    $ok = $stmt->execute([$weekId, $title, $start, $desc, $links]);
+    $stmt = $db->prepare("INSERT INTO weeks (title, start_date, description, links) VALUES (?, ?, ?, ?)");
+    $ok = $stmt->execute([$title, $start, $desc, $links]);
 
     if ($ok) {
-        sendResponse(["success" => true, "week_id" => $weekId], 201);
+        $newId = $db->lastInsertId();
+        sendResponse(["success" => true, "week_id" => "week_" . $newId], 201);
     }
 
     sendError("Failed to create week", 500);
@@ -152,11 +137,11 @@ function createWeek($db, $data) {
 function updateWeek($db, $data) {
     if (empty($data["week_id"])) sendError("week_id is required");
 
-    $week_id = $data["week_id"];
+    $weekId = $data["week_id"];
+    $numericId = str_replace("week_", "", $weekId);
 
-    // Check existence
-    $stmt = $db->prepare("SELECT * FROM weeks WHERE week_id = ?");
-    $stmt->execute([$week_id]);
+    $stmt = $db->prepare("SELECT * FROM weeks WHERE id = ?");
+    $stmt->execute([$numericId]);
     if (!$stmt->fetch()) sendError("Week not found", 404);
 
     $fields = [];
@@ -187,8 +172,8 @@ function updateWeek($db, $data) {
 
     $fields[] = "updated_at = CURRENT_TIMESTAMP";
 
-    $sql = "UPDATE weeks SET " . implode(", ", $fields) . " WHERE week_id = ?";
-    $values[] = $week_id;
+    $sql = "UPDATE weeks SET " . implode(", ", $fields) . " WHERE id = ?";
+    $values[] = $numericId;
 
     $stmt = $db->prepare($sql);
     $stmt->execute($values);
@@ -199,30 +184,29 @@ function updateWeek($db, $data) {
 function deleteWeek($db, $weekId) {
     if (empty($weekId)) sendError("week_id required");
 
-    $stmt = $db->prepare("SELECT * FROM weeks WHERE week_id = ?");
-    $stmt->execute([$weekId]);
+    $numericId = str_replace("week_", "", $weekId);
+
+    $stmt = $db->prepare("SELECT * FROM weeks WHERE id = ?");
+    $stmt->execute([$numericId]);
     if (!$stmt->fetch()) sendError("Week not found", 404);
 
-    $stmt = $db->prepare("DELETE FROM comments WHERE week_id = ?");
-    $stmt->execute([$weekId]);
+    $stmt = $db->prepare("DELETE FROM comments_week WHERE week_id = ?");
+    $stmt->execute([$numericId]);
 
-    $stmt = $db->prepare("DELETE FROM weeks WHERE week_id = ?");
-    $ok = $stmt->execute([$weekId]);
+    $stmt = $db->prepare("DELETE FROM weeks WHERE id = ?");
+    $ok = $stmt->execute([$numericId]);
 
     if ($ok) sendResponse(["success" => true, "message" => "Week and its comments deleted"]);
     sendError("Failed to delete week", 500);
 }
 
-
-// ============================================================================
-// COMMENTS CRUD
-// ============================================================================
-
 function getCommentsByWeek($db, $weekId) {
     if (empty($weekId)) sendError("week_id required");
 
-    $stmt = $db->prepare("SELECT * FROM comments WHERE week_id = ? ORDER BY created_at ASC");
-    $stmt->execute([$weekId]);
+    $numericId = str_replace("week_", "", $weekId);
+
+    $stmt = $db->prepare("SELECT * FROM comments_week WHERE week_id = ? ORDER BY created_at ASC");
+    $stmt->execute([$numericId]);
     $rows = $stmt->fetchAll();
 
     sendResponse(["success" => true, "data" => $rows]);
@@ -233,16 +217,17 @@ function createComment($db, $data) {
         sendError("Missing required fields");
     }
 
-    $weekId = sanitizeInput($data["week_id"]);
+    $weekId = $data["week_id"];
+    $numericId = str_replace("week_", "", $weekId);
     $author = sanitizeInput($data["author"]);
     $text   = sanitizeInput($data["text"]);
 
-    $stmt = $db->prepare("SELECT * FROM weeks WHERE week_id = ?");
-    $stmt->execute([$weekId]);
+    $stmt = $db->prepare("SELECT * FROM weeks WHERE id = ?");
+    $stmt->execute([$numericId]);
     if (!$stmt->fetch()) sendError("Week not found", 404);
 
-    $stmt = $db->prepare("INSERT INTO comments (week_id, author, text) VALUES (?, ?, ?)");
-    $ok = $stmt->execute([$weekId, $author, $text]);
+    $stmt = $db->prepare("INSERT INTO comments_week (week_id, author, text) VALUES (?, ?, ?)");
+    $ok = $stmt->execute([$numericId, $author, $text]);
 
     if ($ok) sendResponse(["success" => true, "comment_id" => $db->lastInsertId()], 201);
 
@@ -252,22 +237,17 @@ function createComment($db, $data) {
 function deleteComment($db, $commentId) {
     if (empty($commentId)) sendError("Missing id");
 
-    $stmt = $db->prepare("SELECT * FROM comments WHERE id = ?");
+    $stmt = $db->prepare("SELECT * FROM comments_week WHERE id = ?");
     $stmt->execute([$commentId]);
     if (!$stmt->fetch()) sendError("Comment not found", 404);
 
-    $stmt = $db->prepare("DELETE FROM comments WHERE id = ?");
+    $stmt = $db->prepare("DELETE FROM comments_week WHERE id = ?");
     $ok = $stmt->execute([$commentId]);
 
     if ($ok) sendResponse(["success" => true, "message" => "Comment deleted"]);
 
     sendError("Failed to delete comment", 500);
 }
-
-
-// ============================================================================
-// MAIN ROUTER
-// ============================================================================
 
 try {
 

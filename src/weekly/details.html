@@ -11,61 +11,41 @@
 <body id="details-body">
 
     <header id="details-header">
-        <h1 id="week-title">Week 1: Introduction to HTML</h1>
+        <h1 id="week-title">Loading...</h1>
     </header>
 
     <main id="details-main">
 
-        <!-- Section 1: Weekly Information -->
         <article id="week-info">
 
-            <p id="week-start-date">Starts on: YYYY-MM-DD</p>
+            <p id="week-date">Starts on: Loading...</p>
 
             <h2 id="description-heading">Description & Notes</h2>
 
-            <p id="week-description">
-                This week introduces the basic structure of HTML documents,
-                semantic tags, and how to create clean, readable markup.
-            </p>
+            <p id="week-description">Loading...</p>
 
-            <h2 id="resources-heading">Exercises & Resources</h2>
+            <h2 id="resources-heading">Resources & Links</h2>
 
-            <ul id="resource-list">
-                <li class="resource-item"><a href="#" class="resource-link">Exercise 1 - Basic Tags</a></li>
-                <li class="resource-item"><a href="#" class="resource-link">Exercise 2 - Page Structure</a></li>
-                <li class="resource-item"><a href="#" class="resource-link">Resource - HTML Reference Guide</a></li>
+            <ul id="week-links-list">
             </ul>
 
         </article>
 
-        <!-- Section 2: Discussion Forum -->
         <section id="discussion-forum">
             <h2 id="discussion-heading">Discussion</h2>
 
-            <!-- Existing Comments -->
             <div id="comment-list">
-
-                <!-- Dummy Comment 1 -->
-                <article class="comment" id="comment-1">
-                    <p class="comment-text">I have a question about the difference between &lt;header&gt; and &lt;head&gt; tags.</p>
-                    <footer class="comment-author">Posted by: John Doe</footer>
-                </article>
-
-                <!-- Dummy Comment 2 -->
-                <article class="comment" id="comment-2">
-                    <p class="comment-text">Great introduction so far! The examples are very helpful.</p>
-                    <footer class="comment-author">Posted by: Sarah Lee</footer>
-                </article>
-
             </div>
 
-            <!-- Add Comment Form -->
             <form id="comment-form" action="#">
                 <fieldset id="comment-fieldset">
-                    <legend id="comment-legend">Ask a Question</legend>
+                    <legend id="comment-legend">Add a Comment</legend>
 
-                    <label for="new-comment" id="comment-label">Your Comment:</label>
-                    <textarea id="new-comment" required></textarea>
+                    <label for="comment-author">Your Name:</label>
+                    <input type="text" id="comment-author" required>
+
+                    <label for="comment-text">Your Comment:</label>
+                    <textarea id="comment-text" rows="4" required></textarea>
 
                     <button id="post-comment-btn" type="submit">Post Comment</button>
                 </fieldset>
@@ -74,6 +54,8 @@
         </section>
 
     </main>
+
+    <script src="details.js" defer></script>
 
 </body>
 </html>

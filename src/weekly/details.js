@@ -1,5 +1,3 @@
-/* details.js – WEEK DETAILS + COMMENTS */
-
 const WEEK_API = "./api/index.php?resource=weeks";
 const COMMENT_API = "./api/index.php?resource=comments";
 
@@ -14,59 +12,99 @@ const commentList = document.querySelector("#comment-list");
 const commentForm = document.querySelector("#comment-form");
 
 async function loadWeek() {
-    const res = await fetch(`${WEEK_API}&week_id=${weekId}`);
-    const json = await res.json();
+    if (!weekId) {
+        titleEl.textContent = "Error: No week specified";
+        return;
+    }
 
-    if (!json.success) return;
+    try {
+        const res = await fetch(`${WEEK_API}&week_id=${weekId}`);
+        const json = await res.json();
 
-    const w = json.data;
+        if (!json.success) {
+            titleEl.textContent = "Week not found";
+            return;
+        }
 
-    titleEl.textContent = w.title;
-    dateEl.textContent = w.start_date;
-    descEl.textContent = w.description;
+        const w = json.data;
 
-    linksEl.innerHTML = "";
-    w.links.forEach(link => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
-        linksEl.appendChild(li);
-    });
+        titleEl.textContent = w.title;
+        dateEl.textContent = "Starts on: " + w.start_date;
+        descEl.textContent = w.description;
+
+        linksEl.innerHTML = "";
+        if (w.links && w.links.length > 0) {
+            w.links.forEach(link => {
+                const li = document.createElement("li");
+                li.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
+                linksEl.appendChild(li);
+            });
+        } else {
+            linksEl.innerHTML = "<li>No resources available</li>";
+        }
+    } catch (err) {
+        console.error("Failed to load week:", err);
+        titleEl.textContent = "Error loading week";
+    }
 }
 
 async function loadComments() {
-    const res = await fetch(`${COMMENT_API}&week_id=${weekId}`);
-    const json = await res.json();
+    if (!weekId) return;
 
-    commentList.innerHTML = "";
+    try {
+        const res = await fetch(`${COMMENT_API}&week_id=${weekId}`);
+        const json = await res.json();
 
-    json.data.forEach(c => {
-        const article = document.createElement("article");
-        article.innerHTML = `
-            <p>${c.text}</p>
-            <footer>Posted by: ${c.author} (${c.created_at})</footer>
-        `;
-        commentList.appendChild(article);
-    });
+        commentList.innerHTML = "";
+
+        if (!json.success || !json.data || json.data.length === 0) {
+            commentList.innerHTML = "<p>No comments yet. Be the first to comment!</p>";
+            return;
+        }
+
+        json.data.forEach(c => {
+            const article = document.createElement("article");
+            article.className = "comment";
+            article.innerHTML = `
+                <p class="comment-text">${c.text}</p>
+                <footer class="comment-author">Posted by: ${c.author} (${c.created_at})</footer>
+            `;
+            commentList.appendChild(article);
+        });
+    } catch (err) {
+        console.error("Failed to load comments:", err);
+    }
 }
 
 commentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const author = document.querySelector("#comment-author").value;
-    const text = document.querySelector("#comment-text").value;
+    const author = document.querySelector("#comment-author").value.trim();
+    const text = document.querySelector("#comment-text").value.trim();
 
-    await fetch(COMMENT_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            week_id: weekId,
-            author,
-            text
-        })
-    });
+    if (!author || !text) return;
 
-    commentForm.reset();
-    loadComments();
+    try {
+        const res = await fetch(COMMENT_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                week_id: weekId,
+                author,
+                text
+            })
+        });
+
+        const json = await res.json();
+        if (json.success) {
+            commentForm.reset();
+            loadComments();
+        } else {
+            console.error("Failed to post comment:", json.error);
+        }
+    } catch (err) {
+        console.error("Error posting comment:", err);
+    }
 });
 
 loadWeek();

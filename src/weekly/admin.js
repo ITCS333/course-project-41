@@ -1,14 +1,7 @@
-/*
-  Requirement: Make the "Manage Weekly Breakdown" page interactive.
-*/
-
-// --- API URL ---
 const WEEKS_URL = "./api/index.php?resource=weeks";
 
-// --- Global Data ---
 let weeks = [];
 
-// --- Element Selections ---
 const weekForm = document.getElementById("week-form");
 const weeksTableBody = document.getElementById("weeks-tbody");
 
@@ -21,16 +14,8 @@ const submitBtn = document.getElementById("add-week");
 const formTitle = document.getElementById("form-title");
 const cancelBtn = document.getElementById("cancel-edit-button");
 
-// Hide cancel button initially
 cancelBtn.style.display = "none";
 
-
-// --- Functions ---
-
-
-/**
- * Create a table row for a week
- */
 function createWeekRow(week) {
   const tr = document.createElement("tr");
 
@@ -38,18 +23,14 @@ function createWeekRow(week) {
     <td>${week.title}</td>
     <td>${week.description}</td>
     <td class="action-td">
-        <button class="edit-btn" data-id="${week.id}">Edit</button>
-        <button class="delete-btn" data-id="${week.id}">Delete</button>
+        <button class="edit-btn" data-id="${week.week_id}">Edit</button>
+        <button class="delete-btn" data-id="${week.week_id}">Delete</button>
     </td>
   `;
 
   return tr;
 }
 
-
-/**
- * Render the table
- */
 function renderTable() {
   weeksTableBody.innerHTML = "";
   weeks.forEach(week => {
@@ -57,10 +38,6 @@ function renderTable() {
   });
 }
 
-
-/**
- * Handle Add or Update
- */
 function handleAddWeek(event) {
   event.preventDefault();
 
@@ -71,12 +48,8 @@ function handleAddWeek(event) {
 
   const editId = weekForm.dataset.editId;
 
-  // -----------------
-  // ADD WEEK
-  // -----------------
   if (!editId) {
     const newWeek = {
-      id: "",
       title,
       start_date,
       description,
@@ -90,9 +63,9 @@ function handleAddWeek(event) {
     })
       .then(res => res.json())
       .then(result => {
-        if (!result.success) throw new Error("API Error");
+        if (!result.success) throw new Error(result.error || "API Error");
 
-        newWeek.id = result.data;
+        newWeek.week_id = result.week_id;
         weeks.push(newWeek);
 
         renderTable();
@@ -101,18 +74,15 @@ function handleAddWeek(event) {
       .catch(err => console.error(err));
 
   } else {
-    // -----------------
-    // UPDATE WEEK
-    // -----------------
     const updated = {
-      id: editId,
+      week_id: editId,
       title,
       start_date,
       description,
       links
     };
 
-    fetch(WEEKS_URL + "&id=" + editId, {
+    fetch(WEEKS_URL, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated)
@@ -121,7 +91,7 @@ function handleAddWeek(event) {
       .then(result => {
         if (!result.success) throw new Error(result.error);
 
-        const week = weeks.find(w => w.id == editId);
+        const week = weeks.find(w => w.week_id == editId);
         Object.assign(week, updated);
 
         renderTable();
@@ -131,10 +101,6 @@ function handleAddWeek(event) {
   }
 }
 
-
-/**
- * Reset form from Edit → Add mode
- */
 function resetEditMode() {
   delete weekForm.dataset.editId;
   weekForm.reset();
@@ -143,43 +109,33 @@ function resetEditMode() {
   formTitle.textContent = "Add a New Week";
 }
 
-
-/**
- * Table event handler (Edit/Delete)
- */
 function handleTableClick(event) {
   const btn = event.target;
 
-  // -----------------
-  // DELETE
-  // -----------------
   if (btn.classList.contains("delete-btn")) {
-    const id = btn.dataset.id;
+    const weekId = btn.dataset.id;
 
-    fetch(WEEKS_URL + "&id=" + id, { method: "DELETE" })
+    fetch(WEEKS_URL + "&week_id=" + weekId, { method: "DELETE" })
       .then(res => res.json())
       .then(result => {
         if (!result.success) throw new Error(result.error);
 
-        weeks = weeks.filter(w => w.id != id);
+        weeks = weeks.filter(w => w.week_id != weekId);
         renderTable();
       })
       .catch(err => console.error(err));
   }
 
-  // -----------------
-  // EDIT
-  // -----------------
   if (btn.classList.contains("edit-btn")) {
-    const id = btn.dataset.id;
-    const week = weeks.find(w => w.id == id);
+    const weekId = btn.dataset.id;
+    const week = weeks.find(w => w.week_id == weekId);
 
     titleInput.value = week.title;
     dateInput.value = week.start_date;
     descInput.value = week.description;
-    linksInput.value = week.links.join("\n");
+    linksInput.value = (week.links || []).join("\n");
 
-    weekForm.dataset.editId = id;
+    weekForm.dataset.editId = weekId;
     submitBtn.textContent = "Update Week";
     cancelBtn.style.display = "inline-block";
     formTitle.textContent = "Update Week";
@@ -188,14 +144,8 @@ function handleTableClick(event) {
   }
 }
 
-
-// Cancel edit button
 cancelBtn.addEventListener("click", resetEditMode);
 
-
-/**
- * Load table initially
- */
 async function loadAndInitialize() {
   try {
     const res = await fetch(WEEKS_URL);
@@ -214,6 +164,4 @@ async function loadAndInitialize() {
   }
 }
 
-
-// Start
 loadAndInitialize();
