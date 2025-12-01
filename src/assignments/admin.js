@@ -152,8 +152,22 @@ function handleTableClick(event) {
  * 5. Add the 'click' event listener to `assignmentsTableBody` (calls `handleTableClick`).
  */
 async function loadAndInitialize() {
-  // ... your implementation here ...
+  try {
+    // 1) Load initial assignments from JSON (optional but nice)
+    const response = await fetch("api/assignments.json"); // adjust path if needed
+    if (response.ok) {
+      const data = await response.json();
+      // Expecting data to be an array of assignments
+      assignments = data;
+      renderTable();
+    } else {
+      console.error("Failed to load assignments.json:", response.status);
+    }
+  } catch (error) {
+    console.error("Error loading assignments.json:", error);
+  }
 
+  // 2) Wire up events
   if (assignmentForm) {
     assignmentForm.addEventListener("submit", handleAddAssignment);
   }
@@ -162,7 +176,6 @@ async function loadAndInitialize() {
     assignmentsTableBody.addEventListener("click", handleTableClick);
   }
 }
-
 // --- Initial Page Load ---
 // Call the main async function to start the application.
 loadAndInitialize();
