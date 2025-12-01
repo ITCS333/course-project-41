@@ -16,7 +16,7 @@
 | ---- | ----------- |
 | 1    |             |
 | 2    |             |
-| 3    | ALI FAREED MANSOOR (202007740) |
+| 3    | ALI FAREED MANSOOR  |
 | 4    |             |
 | 5    |             |
 
