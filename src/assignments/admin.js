@@ -13,7 +13,7 @@
 
 // --- Global Data Store ---
 // This will hold the assignments loaded from the JSON file.
-let assignments = [];
+let editingAssignmentId = null;
 
 // --- Element Selections ---
 // TODO: Select the assignment form ('#assignment-form').
