@@ -4,7 +4,7 @@
 | Student ID | Name |
 | ---------- | ---- |
 | 202007740  | ALI FAREED MANSOOR |
-|            |                      |
+| 202006149  |Fahad Al-Doseri       |
 |            |                      |
 |            |                      |
 |            |                      |
@@ -17,7 +17,7 @@
 | 1    |             |
 | 2    |             |
 | 3    | ALI FAREED MANSOOR  |
-| 4    |             |
+| 4    |  Fahad Al-Doseri    |
 | 5    |             |
 
 ---
